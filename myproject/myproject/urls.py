@@ -24,6 +24,15 @@ from basic.views import add
 from basic.views import sub
 from basic.views import mult
 from basic.views import div
+from basic.views import health
+from basic.views import addStudent
+from basic.views import addStudent_age_20, orderbyname
+from basic.views import job1
+from basic.views import job2
+from basic.views import signUp
+from basic.views import check
+from basic.views import login
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('sai/',sample),
@@ -34,4 +43,14 @@ urlpatterns = [
     path('m2/',sub),
     path('m3/',mult),
     path('m4/',div),
+    path('health/',health),
+    path('add/',addStudent),
+    path('addStudent_age_20/',addStudent_age_20),
+    path('orderby/',orderbyname),
+    path('job1/',job1),
+    path('job2/',job2),
+    path('signup/',signUp),
+    path('check/',check),
+    path('login/',login)
+
 ]
