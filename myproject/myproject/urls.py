@@ -31,7 +31,7 @@ from basic.views import job1
 from basic.views import job2
 from basic.views import signUp
 from basic.views import check
-from basic.views import login
+from basic.views import login,passwordchange
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -51,6 +51,7 @@ urlpatterns = [
     path('job2/',job2),
     path('signup/',signUp),
     path('check/',check),
-    path('login/',login)
+    path('login/',login),
+    path('passwordchange/',passwordchange)
 
 ]

@@ -7,6 +7,8 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from basic.models import StudentNew,Users
 from django.contrib.auth.hashers import make_password,check_password
+import jwt
+from django.conf import settings
 # Create your views here.
 def sample(request):
     return HttpResponse("hello world")
@@ -200,7 +202,9 @@ def login(request):
         try:
             user=Users.objects.get(username=username)
             if check_password(password,user.password):
-                return JsonResponse({"status":'successfully loggedin'},status=200)
+                payload={"username":username,"email":user.email,"id":user.id}
+                token=jwt.encode(payload,settings.SECRET_KEY,algorithm="HS256")
+                return JsonResponse({"status":'successfully loggedin',"token":token},status=200)
             else:
                 return JsonResponse({"status":'failure','message':'invalid password'},status=400)
         except Users.DoesNotExist:
@@ -216,3 +220,24 @@ def check(request):
     x=check_password(ipdata.get("ip"),hashed)
     print(x)
     return JsonResponse({"status":"success","data":x},status=200)
+
+
+
+@csrf_exempt
+def passwordchange(request):
+    if request.method == "PUT":
+        data = json.loads(request.body)
+        username = data.get("username")
+        try:
+            user = Users.objects.get(username=username)  # check in DB
+            new_password = data.get("password")
+            hashed_new_password = make_password(new_password)
+            user.password = hashed_new_password
+            user.save()
+            return JsonResponse({"status": "success", "message": "Your password is updated successfully"},status=200)
+        except Users.DoesNotExist:
+            return JsonResponse(
+                {"status": "failure", "message": "User not found"},status=400)
+    return JsonResponse({"error": "Invalid request method"}, status=405)
+
+
