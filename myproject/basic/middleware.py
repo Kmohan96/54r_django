@@ -1,6 +1,8 @@
 from django.http import JsonResponse
 import json
 import re
+import jwt
+from django.conf import settings
 class basicMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
@@ -100,4 +102,23 @@ class Passwordmiddleware:
 
 
 
- 
+class authenticate_middleware:
+    def __init__(self,get_response):  #it works when server runs
+        self.get_response=get_response
+    def __call__(self,request): #it works when we make request
+        if request.path=="/users/":
+            token=request.headers.get("Authorization")
+            print(token,"token")
+            if not token:
+                return JsonResponse({"error":"Authorization token missing"},status=401)
+            token_value=token.split(" ")[1]
+            print(token_value,"token_value")
+            try:
+                decoded_data=jwt.decode(token_value,settings.SECRET_KEY,algorithms=["HS256"])
+                print(decoded_data,"decoded_data")
+                request.token_data=decoded_data  #through request from middleware to view we are sending decoded_data
+            except jwt.ExpiredSignatureError:
+                return JsonResponse({"error":"token has expired,please try again"},status=401)
+
+        return self.get_response(request)
+

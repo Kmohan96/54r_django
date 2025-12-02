@@ -9,6 +9,8 @@ from basic.models import StudentNew,Users
 from django.contrib.auth.hashers import make_password,check_password
 import jwt
 from django.conf import settings
+from datetime import datetime,timedelta
+from zoneinfo import ZoneInfo
 # Create your views here.
 def sample(request):
     return HttpResponse("hello world")
@@ -201,10 +203,12 @@ def login(request):
         password=data.get("password")        
         try:
             user=Users.objects.get(username=username)
+            issued_time=datetime.now(ZoneInfo("Asia/Kolkata"))
+            expired_time=issued_time+timedelta(minutes=25)
             if check_password(password,user.password):
-                payload={"username":username,"email":user.email,"id":user.id}
+                payload={"username":username,"email":user.email,"id":user.id,"exp":expired_time}
                 token=jwt.encode(payload,settings.SECRET_KEY,algorithm="HS256")
-                return JsonResponse({"status":'successfully loggedin',"token":token},status=200)
+                return JsonResponse({"status":'successfully loggedin',"token":token,"issued_time":issued_time,"expired at":expired_time,"expired_in":int((expired_time-issued_time).total_seconds()/60)},status=200)
             else:
                 return JsonResponse({"status":'failure','message':'invalid password'},status=400)
         except Users.DoesNotExist:
@@ -241,3 +245,16 @@ def passwordchange(request):
     return JsonResponse({"error": "Invalid request method"}, status=405)
 
 
+@csrf_exempt
+def getallusers(request):
+    if request.method=="GET":
+        users=list(Users.objects.values())
+        print(request.token_data,"token_data in view")
+        print(request.token_data.get("username"),"username from token")
+        print(users,"users list")
+        for i in users:
+            print(i["username"],"username from users list")
+            if i["username"]==request.token_data.get("username"):
+                return JsonResponse({"status":"success","loggin_user":request.token_data,"data":users},status=200)    
+        else:
+            return JsonResponse({"error":"unauthorized access"},status=401)

@@ -54,6 +54,8 @@ MIDDLEWARE = [
     'basic.middleware.UsernameMiddleware',
     'basic.middleware.Emailmiddleware',
     'basic.middleware.Passwordmiddleware',
+    'basic.middleware.authenticate_middleware'
+
 
 ]
 
