@@ -258,3 +258,6 @@ def getallusers(request):
                 return JsonResponse({"status":"success","loggin_user":request.token_data,"data":users},status=200)    
         else:
             return JsonResponse({"error":"unauthorized access"},status=401)
+        
+def home(request):
+    return render(request,'home.html')
