@@ -32,7 +32,7 @@ from basic.views import job2
 from basic.views import signUp
 from basic.views import check
 from basic.views import login,passwordchange,getallusers,home
-
+from basic2.views import bs2
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('sai/',sample),
@@ -54,6 +54,7 @@ urlpatterns = [
     path('login/',login),
     path('passwordchange/',passwordchange),
     path('users/',getallusers),
-    path('home/',home)
+    path('home/',home),
+    path('bs2/',bs2)
 
 ]
