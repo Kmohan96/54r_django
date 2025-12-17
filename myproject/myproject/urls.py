@@ -32,7 +32,7 @@ from basic.views import job2
 from basic.views import signUp
 from basic.views import check
 from basic.views import login,passwordchange,getallusers,home
-from basic2.views import bs2
+from basic2.views import bs2,moviebyid,productByCategory,productbyid
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('sai/',sample),
@@ -55,6 +55,9 @@ urlpatterns = [
     path('passwordchange/',passwordchange),
     path('users/',getallusers),
     path('home/',home),
-    path('bs2/',bs2)
+    path('bs2/',bs2),
+    path('movie/<int:id>/',moviebyid),
+    path('product/<int:id>/',productbyid),
+    path('product/category/<str:ctg>/',productByCategory),
 
 ]
